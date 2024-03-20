@@ -5,8 +5,6 @@ const database = require("./config/database");
 const cors = require("cors")
 const userRoutes = require("./routes/UserRoutes");
 const categoryRoutes = require("./routes/CategoryRoutes")
-const faker = require("./utils/faker")
-
 
 // Loading enviornment variables from .env file
 require("dotenv").config();
@@ -23,7 +21,6 @@ database.connect()
 // Setting up routes
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/category" , categoryRoutes)
-app.use("/api/v1/faker" , faker)
 
 // Testing the server
 app.get("/", (req, res) => {

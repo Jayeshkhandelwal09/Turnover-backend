@@ -3,12 +3,13 @@ const express = require('express');
 const router = express.Router();
 
 // Import the required controllers and middleware functions
-const { getAllCategories, updateUserCategories } = require('../controllers/Category');
+const { getAllCategories, updateUserCategories, createCategories } = require('../controllers/Category');
 
 // Route for getting categories
+router.post('/', createCategories);
 router.get('/categories', getAllCategories);
 
 // Route for updating user schema when user select and deselects the categories
-router.put('/users/:userId/categories', updateUserCategories);
+router.put('/:userId/:categoryId', updateUserCategories);
 
 module.exports = router;
