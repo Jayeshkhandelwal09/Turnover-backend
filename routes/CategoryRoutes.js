@@ -7,6 +7,7 @@ const { getAllCategories, updateUserCategories } = require('../controllers/Categ
 
 // Route for getting categories
 router.get('/categories', getAllCategories);
+
 // Route for updating user schema when user select and deselects the categories
 router.put('/users/:userId/categories', updateUserCategories);
 
