@@ -7,6 +7,7 @@ const {
   login,
   signup,
   sendotp,
+  logout,
 } = require("../controllers/Auth")
 
 

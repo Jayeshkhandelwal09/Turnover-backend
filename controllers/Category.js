@@ -28,8 +28,20 @@ exports.createCategories = async (req, res, next) => {
 
 exports.getAllCategories = async (req, res) => {
   try {
-    const categories = await Category.find();
-    res.status(200).json(categories);
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
+    const skip = (page - 1) * limit;
+
+    const totalCategories = await Category.countDocuments();
+    const totalPages = Math.ceil(totalCategories / limit);
+
+    const categories = await Category.find().skip(skip).limit(limit).exec();
+
+    res.status(200).json({
+      categories,
+      currentPage: page,
+      totalPages,
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
@@ -46,18 +58,36 @@ exports.updateUserCategories = async (req, res) => {
     }
 
     if (isSelected) {
-      // Add category to user's categories array
       if (!user.categories.includes(categoryId)) {
         user.categories.push(categoryId);
       }
     } else {
-      // Remove category from user's categories array
-      user.categories = user.categories.filter((id) => id !== categoryId);
+      user.categories = user.categories.filter(
+        (id) => id.toString() !== categoryId.toString()
+      );
     }
 
     await user.save();
 
     res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+exports.getCategoriesByLoggedInUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId).populate("categories");
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const categories = user.categories;
+
+    res.status(200).json(categories);
   } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
